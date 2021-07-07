@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -14,20 +12,20 @@ public class Player : MonoBehaviour
     private Animator anim;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         rig = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         Move();
         Jump();
     }
 
-    void Move()
+    private void Move()
     {
         Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0f, 0f);
         transform.position += movement * Time.deltaTime * Speed;
@@ -48,7 +46,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Jump()
+    private void Jump()
     {
         if (Input.GetButtonDown("Jump"))
         {
@@ -63,16 +61,21 @@ public class Player : MonoBehaviour
                 rig.AddForce(new Vector2(0f, JumpForce * 1.2f), ForceMode2D.Impulse);
                 doubleJump = false;
             }
-            
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 6)
+        if (collision.gameObject.tag == "Ground")
         {
             isJumping = false;
             anim.SetBool("jump", false);
+        }
+
+        if (collision.gameObject.tag == "Spike")
+        {
+            GameController.instance.ShowGameOver();
+            Destroy(gameObject);
         }
     }
 
