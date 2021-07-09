@@ -4,6 +4,7 @@ public class Rat : MonoBehaviour
 {
     private Rigidbody2D rig;
     private Animator anim;
+    private SpriteRenderer sp;
 
     public float speed;
 
@@ -22,6 +23,7 @@ public class Rat : MonoBehaviour
     {
         rig = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        sp = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -45,11 +47,23 @@ public class Rat : MonoBehaviour
             float height = collision.GetContact(0).point.y - headPoint.position.y;
             
             if (height > 0)
-            {                
-                enemyDeath.SetActive(true);
+            {                                
                 collision.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 300, ForceMode2D.Impulse);
-                Destroy(gameObject, 0.1f);
+                EnemyDead();
             }
         }
+    }
+
+    void EnemyDead()
+    {
+        sp.color = new Color(0f, 0f, 0f, 0f);
+        speed = 0;
+        enemyDeath.SetActive(true);
+        Invoke("DestroyEnemy", 0.2f);
+    }
+
+    void DestroyEnemy()
+    {
+        Destroy(gameObject);
     }
 }

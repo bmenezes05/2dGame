@@ -8,32 +8,33 @@ public class Eagle : MonoBehaviour
 
     public float speed;
     public bool isDirectionUp = true;
+    public bool move = true;
     public float timer;
     public float moveTime;
 
-    private TargetJoint2D target;
-    private BoxCollider2D box;
-    private Rigidbody2D rig;
+    private SpriteRenderer sp;
 
     public GameObject enemyDeath;
 
     void Start()
     {
-        target = GetComponent<TargetJoint2D>();
-        box = GetComponent<BoxCollider2D>();
-        rig = GetComponent<Rigidbody2D>();
+        sp = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
-        if (isDirectionUp)
+        if (!move)
+        {
+            transform.Translate(Vector2.zero);
+        }
+        else if (isDirectionUp)
         {
             transform.Translate(Vector2.up * speed * Time.deltaTime);
         }
         else
         {
             transform.Translate(Vector2.down * speed * Time.deltaTime);
-        }
+        }                
 
         timer += Time.deltaTime;
 
@@ -49,24 +50,21 @@ public class Eagle : MonoBehaviour
     {
         if(collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 300, ForceMode2D.Impulse);
-            enemyDeath.SetActive(true);
-            Invoke("Falling", fallingTime);
+            collision.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 400, ForceMode2D.Impulse);
+            EnemyDead();                        
         }
     }
-
-    void OnTriggerEnter2D(Collider2D collision)
+        
+    void EnemyDead()
     {
-        if(collision.gameObject.layer == 8)
-        {
-            Destroy(gameObject);
-        }
+        sp.color = new Color(0f, 0f, 0f, 0f);
+        move = false;
+        enemyDeath.SetActive(true);        
+        Invoke("DestroyEnemy", 0.2f);
     }
 
-    void Falling()
+    void DestroyEnemy()
     {
-        rig.gravityScale = 140f;
-        target.enabled = false;
-        box.isTrigger = true;
+        Destroy(gameObject);
     }
 }
