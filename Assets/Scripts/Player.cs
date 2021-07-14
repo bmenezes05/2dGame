@@ -1,15 +1,24 @@
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     public float Speed;
     public float JumpForce;
-
-    public bool isJumping;
     public bool doubleJump;
 
     private Rigidbody2D rig;
     private Animator anim;
+
+    private bool isGrounded()
+    {
+        return transform.Find("GroundCheck").GetComponent<GroundCheck>().isGrounded;
+    }
+
+    private bool hittedSpike()
+    {
+        return transform.Find("GroundCheck").GetComponent<GroundCheck>().hittedSpike;
+    }
 
     // Start is called before the first frame update
     private void Start()
@@ -23,19 +32,29 @@ public class Player : MonoBehaviour
     {
         Move();
         Jump();
+        ControlAnimations();
+        GameOver();
     }
 
-    private void Move()
+    private void GameOver()
     {
-        Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0f, 0f);
-        transform.position += movement * Time.deltaTime * Speed;
+        if (hittedSpike())
+        {
+            GameController.instance.ShowGameOver();
+            Destroy(gameObject);
+        }
+    }
 
-        if (Input.GetAxis("Horizontal") > 0f)
+    private void ControlAnimations()
+    {
+        anim.SetBool("jump", !isGrounded());
+
+        if (Input.GetAxisRaw("Horizontal") > 0f)
         {
             anim.SetBool("walk", true);
             transform.eulerAngles = new Vector3(0f, 0f, 0f);
         }
-        else if (Input.GetAxis("Horizontal") < 0f)
+        else if (Input.GetAxisRaw("Horizontal") < 0f)
         {
             anim.SetBool("walk", true);
             transform.eulerAngles = new Vector3(0f, 180f, 0f);
@@ -46,44 +65,25 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void Move()
+    {
+        rig.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * Speed, rig.velocity.y);
+    }
+
     private void Jump()
     {
         if (Input.GetButtonDown("Jump"))
         {
-            if (!isJumping)
+            if (isGrounded())
             {
                 rig.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse);
                 doubleJump = true;
-                anim.SetBool("jump", true);
             }
             else if (doubleJump)
             {
                 rig.AddForce(new Vector2(0f, JumpForce * 1.2f), ForceMode2D.Impulse);
                 doubleJump = false;
             }
-        }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Ground")
-        {
-            isJumping = false;
-            anim.SetBool("jump", false);
-        }
-
-        if (collision.gameObject.tag == "Spike")
-        {
-            GameController.instance.ShowGameOver();
-            Destroy(gameObject);
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == 6)
-        {
-            isJumping = true;
         }
     }
 }

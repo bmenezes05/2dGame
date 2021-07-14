@@ -133,7 +133,7 @@ Transform:
   m_GameObject: {fileID: 7512671894082167289}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 158.6, y: 97.5, z: 0}
-  m_LocalScale: {x: 1.3692, y: 1.3692, z: 1.3692}
+  m_LocalScale: {x: 0.38803127, y: 0.38803127, z: 0.38803127}
   m_Children:
   - {fileID: 6118160925328673647}
   m_Father: {fileID: 0}
@@ -270,7 +270,7 @@ TargetJoint2D:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_Anchor: {x: 0, y: 0}
-  m_Target: {x: 158.6, y: 97.5}
+  m_Target: {x: 329.6678, y: 167.25241}
   m_AutoConfigureTarget: 1
   m_MaxForce: 10000
   m_DampingRatio: 1
@@ -288,8 +288,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fallingTime: 0.2
-  speed: 90
+  speed: 20
   isDirectionUp: 1
+  move: 1
   timer: 0
   moveTime: 1
   enemyDeath: {fileID: 3024454878065086543}

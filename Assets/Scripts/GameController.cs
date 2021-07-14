@@ -9,16 +9,15 @@ public class GameController : MonoBehaviour
 
     public static GameController instance;
     public GameObject gameOver;
-
-    // Start is called before the first frame update
+    
     private void Start()
     {
         instance = this;
     }
 
-    // Update is called once per frame
-    private void Update()
+    public void NewGame()
     {
+        SceneManager.LoadScene("lvl_1");
     }
 
     public void UpdateScoreText()

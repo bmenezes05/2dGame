@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class Rat : MonoBehaviour
 {
-    private Rigidbody2D rig;
-    private Animator anim;
+    private Rigidbody2D rig;    
     private SpriteRenderer sp;
 
     public float speed;
@@ -13,6 +12,7 @@ public class Rat : MonoBehaviour
     public Transform headPoint;
 
     private bool colliding;
+    private bool playerDestroyed = false;
 
     public LayerMask layer;
 
@@ -21,8 +21,7 @@ public class Rat : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        rig = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
+        rig = GetComponent<Rigidbody2D>();        
         sp = GetComponent<SpriteRenderer>();
     }
 
@@ -46,10 +45,16 @@ public class Rat : MonoBehaviour
         {
             float height = collision.GetContact(0).point.y - headPoint.position.y;
             
-            if (height > 0)
+            if (height > 0 && !playerDestroyed)
             {                                
-                collision.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 300, ForceMode2D.Impulse);
+                collision.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 30, ForceMode2D.Impulse);
                 EnemyDead();
+            }
+            else
+            {
+                playerDestroyed = true;
+                GameController.instance.ShowGameOver();
+                Destroy(collision.gameObject);
             }
         }
     }
